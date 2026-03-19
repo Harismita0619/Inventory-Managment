@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+{% block title %}{{ action }} Product — Inventory Manager{% endblock %}
+{% block content %}
+<div class="page-header">
+  <h1><span class="label">{{ action }}</span>Product</h1>
+  <a href="{{ url_for('products') }}" class="btn btn-outline">← Back</a>
+</div>
+
+<div class="card form-card" style="padding:1.8rem">
+  <form method="POST">
+    <div class="form-group">
+      <label for="product_id">Product ID</label>
+      <input type="text" id="product_id" name="product_id"
+             value="{{ product.product_id if product else '' }}"
+             placeholder="e.g. ProductA or SKU-1234"
+             {% if action == 'Edit' %}readonly{% endif %}
+             required />
+      <p class="form-hint">Unique identifier for this product (text/varchar).</p>
+    </div>
+    <div class="form-actions">
+      <button type="submit" class="btn btn-success">{{ '💾 Save Changes' if action == 'Edit' else '+ Add Product' }}</button>
+      <a href="{{ url_for('products') }}" class="btn btn-outline">Cancel</a>
+    </div>
+  </form>
+</div>
+{% endblock %}
