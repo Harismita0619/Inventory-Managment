@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>{% block title %}Inventory Manager{% endblock %}</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0f1117;
+      --surface: #1a1d27;
+      --surface2: #232636;
+      --border: #2e3148;
+      --accent: #6c63ff;
+      --accent2: #00d2a0;
+      --danger: #ff5c5c;
+      --warning: #ffb547;
+      --text: #e8eaf6;
+      --muted: #7a7f9a;
+      --mono: 'Space Mono', monospace;
+      --sans: 'DM Sans', sans-serif;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { background: var(--bg); color: var(--text); font-family: var(--sans); min-height: 100vh; }
+
+    /* NAV */
+    nav {
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      padding: 0 2rem;
+      display: flex;
+      align-items: center;
+      gap: 2rem;
+      height: 60px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .nav-brand {
+      font-family: var(--mono);
+      font-weight: 700;
+      font-size: 1rem;
+      color: var(--accent2);
+      letter-spacing: 0.05em;
+      text-decoration: none;
+      margin-right: auto;
+    }
+    .nav-brand span { color: var(--accent); }
+    nav a {
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 0.875rem;
+      font-weight: 500;
+      padding: 0.35rem 0.75rem;
+      border-radius: 6px;
+      transition: all 0.15s;
+    }
+    nav a:hover, nav a.active { background: var(--surface2); color: var(--text); }
+    nav a.report-link { color: var(--accent2); border: 1px solid rgba(0,210,160,0.25); }
+    nav a.report-link:hover { background: rgba(0,210,160,0.1); }
+
+    /* LAYOUT */
+    .container { max-width: 1100px; margin: 0 auto; padding: 2rem 1.5rem; }
+
+    /* PAGE HEADER */
+    .page-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 2rem;
+    }
+    .page-header h1 {
+      font-family: var(--mono);
+      font-size: 1.4rem;
+      font-weight: 700;
+      color: var(--text);
+    }
+    .page-header h1 .label {
+      display: block;
+      font-size: 0.7rem;
+      color: var(--muted);
+      font-weight: 400;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      margin-bottom: 4px;
+    }
+
+    /* BUTTONS */
+    .btn {
+      display: inline-flex; align-items: center; gap: 0.4rem;
+      padding: 0.5rem 1.1rem;
+      border-radius: 8px;
+      border: none;
+      font-family: var(--sans);
+      font-size: 0.875rem;
+      font-weight: 500;
+      cursor: pointer;
+      text-decoration: none;
+      transition: all 0.15s;
+    }
+    .btn-primary { background: var(--accent); color: #fff; }
+    .btn-primary:hover { background: #5850e8; }
+    .btn-success { background: var(--accent2); color: #0f1117; }
+    .btn-success:hover { background: #00b88c; }
+    .btn-danger { background: var(--danger); color: #fff; }
+    .btn-danger:hover { background: #e84040; }
+    .btn-outline {
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--muted);
+    }
+    .btn-outline:hover { border-color: var(--accent); color: var(--text); }
+    .btn-sm { padding: 0.3rem 0.7rem; font-size: 0.8rem; }
+
+    /* CARD */
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      overflow: hidden;
+    }
+
+    /* TABLE */
+    table { width: 100%; border-collapse: collapse; }
+    thead tr { border-bottom: 2px solid var(--border); }
+    th {
+      text-align: left;
+      padding: 0.9rem 1.2rem;
+      font-family: var(--mono);
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--muted);
+    }
+    td { padding: 0.85rem 1.2rem; border-bottom: 1px solid var(--border); font-size: 0.9rem; }
+    tbody tr:last-child td { border-bottom: none; }
+    tbody tr:hover { background: rgba(255,255,255,0.02); }
+
+    /* BADGE */
+    .badge {
+      display: inline-block;
+      padding: 0.2rem 0.6rem;
+      border-radius: 20px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      font-family: var(--mono);
+    }
+    .badge-green { background: rgba(0,210,160,0.15); color: var(--accent2); }
+    .badge-purple { background: rgba(108,99,255,0.15); color: var(--accent); }
+    .badge-orange { background: rgba(255,181,71,0.15); color: var(--warning); }
+
+    /* FORMS */
+    .form-card { max-width: 560px; }
+    .form-group { margin-bottom: 1.4rem; }
+    label {
+      display: block;
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: 0.5rem;
+    }
+    input[type="text"], input[type="number"], select {
+      width: 100%;
+      padding: 0.65rem 0.9rem;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      color: var(--text);
+      font-family: var(--sans);
+      font-size: 0.9rem;
+      outline: none;
+      transition: border-color 0.15s;
+    }
+    input:focus, select:focus { border-color: var(--accent); }
+    select option { background: var(--surface2); }
+    .form-hint { font-size: 0.78rem; color: var(--muted); margin-top: 0.4rem; }
+    .form-actions { display: flex; gap: 0.75rem; margin-top: 2rem; }
+
+    /* ALERTS */
+    .alerts { margin-bottom: 1.5rem; display: flex; flex-direction: column; gap: 0.5rem; }
+    .alert {
+      padding: 0.75rem 1rem;
+      border-radius: 8px;
+      font-size: 0.875rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .alert-success { background: rgba(0,210,160,0.12); border: 1px solid rgba(0,210,160,0.3); color: var(--accent2); }
+    .alert-error   { background: rgba(255,92,92,0.12); border: 1px solid rgba(255,92,92,0.3); color: var(--danger); }
+
+    /* EMPTY STATE */
+    .empty {
+      text-align: center;
+      padding: 4rem 2rem;
+      color: var(--muted);
+    }
+    .empty .icon { font-size: 3rem; margin-bottom: 1rem; }
+    .empty p { font-size: 0.9rem; margin-bottom: 1.5rem; }
+
+    /* STAT CARDS */
+    .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1rem; margin-bottom: 2rem; }
+    .stat-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1.2rem 1.5rem;
+    }
+    .stat-card .stat-label { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--muted); margin-bottom: 0.5rem; }
+    .stat-card .stat-value { font-family: var(--mono); font-size: 1.8rem; font-weight: 700; }
+    .stat-card.purple .stat-value { color: var(--accent); }
+    .stat-card.green  .stat-value { color: var(--accent2); }
+    .stat-card.orange .stat-value { color: var(--warning); }
+
+    /* TIMESTAMP */
+    .ts { font-family: var(--mono); font-size: 0.78rem; color: var(--muted); }
+
+    /* MOVEMENT ARROW */
+    .arrow { color: var(--muted); padding: 0 4px; }
+  </style>
+</head>
+<body>
+<nav>
+  <a class="nav-brand" href="{{ url_for('index') }}">inv<span>#</span>mgr</a>
+  <a href="{{ url_for('products') }}"  {% if request.endpoint and 'product' in request.endpoint %}class="active"{% endif %}>Products</a>
+  <a href="{{ url_for('locations') }}" {% if request.endpoint and 'location' in request.endpoint %}class="active"{% endif %}>Locations</a>
+  <a href="{{ url_for('movements') }}" {% if request.endpoint and 'movement' in request.endpoint %}class="active"{% endif %}>Movements</a>
+  <a href="{{ url_for('report') }}"    class="report-link {% if request.endpoint == 'report' %}active{% endif %}">⬡ Balance Report</a>
+</nav>
+
+<div class="container">
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+    <div class="alerts">
+      {% for category, message in messages %}
+      <div class="alert alert-{{ category }}">
+        {% if category == 'success' %}✓{% else %}✕{% endif %} {{ message }}
+      </div>
+      {% endfor %}
+    </div>
+    {% endif %}
+  {% endwith %}
+
+  {% block content %}{% endblock %}
+</div>
+</body>
+</html>
