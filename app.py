@@ -35,8 +35,8 @@ class ProductMovement(db.Model):
 
 @app.route('/')
 def index():
-    product_count=Product.query.count()
-    return render_template('index.html')
+    return render_template('index.html',
+    product_count=Product.query.count())
 
 @app.route('/products')
 def products():
