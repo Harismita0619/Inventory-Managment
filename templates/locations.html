@@ -1,5 +1,41 @@
 {% extends 'base.html' %}
-
+{% block title %}Locations — Inventory Manager{% endblock %}
 {% block content %}
-<h1>Locations Page</h1>
+<div class="page-header">
+  <h1><span class="label">Manage</span>Locations</h1>
+  <a href="{{ url_for('add_location') }}" class="btn btn-primary">+ Add Location</a>
+</div>
+
+<div class="card">
+  {% if locations %}
+  <table>
+    <thead>
+      <tr>
+        <th>Location ID</th>
+        <th style="text-align:right">Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for l in locations %}
+      <tr>
+        <td><span class="badge badge-green">{{ l.location_id }}</span></td>
+        <td style="text-align:right">
+          <a href="{{ url_for('edit_location', location_id=l.location_id) }}" class="btn btn-outline btn-sm">Edit</a>
+          <form method="POST" action="{{ url_for('delete_location', location_id=l.location_id) }}" style="display:inline"
+                onsubmit="return confirm('Delete location {{ l.location_id }}?')">
+            <button class="btn btn-danger btn-sm">Delete</button>
+          </form>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% else %}
+  <div class="empty">
+    <div class="icon">🏭</div>
+    <p>No locations yet. Add your first warehouse to get started.</p>
+    <a href="{{ url_for('add_location') }}" class="btn btn-primary">+ Add Location</a>
+  </div>
+  {% endif %}
+</div>
 {% endblock %}

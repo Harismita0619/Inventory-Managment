@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+{% block title %}{{ action }} Location — Inventory Manager{% endblock %}
+{% block content %}
+<div class="page-header">
+  <h1><span class="label">{{ action }}</span>Location</h1>
+  <a href="{{ url_for('locations') }}" class="btn btn-outline">← Back</a>
+</div>
+
+<div class="card form-card" style="padding:1.8rem">
+  <form method="POST">
+    <div class="form-group">
+      <label for="location_id">Location ID</label>
+      <input type="text" id="location_id" name="location_id"
+             value="{{ location.location_id if location else '' }}"
+             placeholder="e.g. Warehouse-A or Shelf-B2"
+             {% if action == 'Edit' %}readonly{% endif %}
+             required />
+      <p class="form-hint">Unique identifier for this warehouse or storage location.</p>
+    </div>
+    <div class="form-actions">
+      <button type="submit" class="btn btn-success">{{ '💾 Save Changes' if action == 'Edit' else '+ Add Location' }}</button>
+      <a href="{{ url_for('locations') }}" class="btn btn-outline">Cancel</a>
+    </div>
+  </form>
+</div>
+{% endblock %}

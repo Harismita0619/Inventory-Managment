@@ -8,6 +8,7 @@ app.config['SQLALCHEMY_TRACK_MODIFICATION'] = False
 
 db = SQLAlchemy(app)
 
+# DB model
 class Product(db.Model):
     product_id = db.Column(db.String(50), primary_key=True)
     movements = db.relationship('ProductMovement', backref='product', lazy=True)
@@ -21,7 +22,6 @@ class Location(db.Model):
     def __repr__(self):
         return f'<Location {self.location_id}>'
 
-
 class ProductMovement(db.Model):
     movement_id   = db.Column(db.String(50), primary_key=True)
     timestamp     = db.Column(db.DateTime, default=datetime.utcnow)
@@ -33,16 +33,20 @@ class ProductMovement(db.Model):
     def __repr__(self):
         return f'<Movement {self.movement_id}>'
 
+# Dashboard    
 @app.route('/')
 def index():
     return render_template('index.html',
-    product_count=Product.query.count())
+    product_count=Product.query.count(),
+    location_count=Location.query.count())
 
+# Product Features
 @app.route('/products')
 def products():
     all_products = Product.query.all()
     return render_template('products.html', products=all_products)
 
+# Product Add Feature
 @app.route('/products/add', methods=['GET', 'POST'])
 def add_product():
     if request.method == 'POST':
@@ -58,6 +62,7 @@ def add_product():
             return redirect(url_for('products'))
     return render_template('product_form.html', action='Add', product=None)
 
+# Product Edit Features
 @app.route('/products/edit/<product_id>', methods=['GET', 'POST'])
 def edit_product(product_id):
     product = Product.query.get_or_404(product_id)
@@ -78,7 +83,7 @@ def edit_product(product_id):
             return redirect(url_for('products'))
     return render_template('product_form.html', action='Edit', product=product)
 
-
+# Product Delete Features
 @app.route('/products/delete/<product_id>', methods=['POST'])
 def delete_product(product_id):
     product = Product.query.get_or_404(product_id)
@@ -87,10 +92,58 @@ def delete_product(product_id):
     flash(f'Product "{product_id}" deleted.', 'success')
     return redirect(url_for('products'))
 
-
-@app.route('/location')
+# Location Features
+@app.route('/locations')
 def locations():
-    return render_template('locations.html')
+    all_locations = Location.query.all()
+    return render_template('locations.html', locations=all_locations)
+
+# Location Add Features
+@app.route('/locations/add', methods=['GET', 'POST'])
+def add_location():
+    if request.method == 'POST':
+        lid = request.form['location_id'].strip()
+        if not lid:
+            flash('Location ID cannot be empty.', 'error')
+        elif Location.query.get(lid):
+            flash(f'Location "{lid}" already exists.', 'error')
+        else:
+            db.session.add(Location(location_id=lid))
+            db.session.commit()
+            flash(f'Location "{lid}" added successfully!', 'success')
+            return redirect(url_for('locations'))
+    return render_template('location_form.html', action='Add', location=None)
+
+# Location Edit Features
+@app.route('/locations/edit/<location_id>', methods=['GET', 'POST'])
+def edit_location(location_id):
+    location = Location.query.get_or_404(location_id)
+    if request.method == 'POST':
+        new_id = request.form['location_id'].strip()
+        if not new_id:
+            flash('Location ID cannot be empty.', 'error')
+        elif new_id != location_id and Location.query.get(new_id):
+            flash(f'Location "{new_id}" already exists.', 'error')
+        else:
+            if new_id != location_id:
+                ProductMovement.query.filter_by(from_location=location_id).update({'from_location': new_id})
+                ProductMovement.query.filter_by(to_location=location_id).update({'to_location': new_id})
+                db.session.delete(location)
+                db.session.flush()
+                db.session.add(Location(location_id=new_id))
+            db.session.commit()
+            flash('Location updated!', 'success')
+            return redirect(url_for('locations'))
+    return render_template('location_form.html', action='Edit', location=location)
+
+# Location Delete Features
+@app.route('/locations/delete/<location_id>', methods=['POST'])
+def delete_location(location_id):
+    location = Location.query.get_or_404(location_id)
+    db.session.delete(location)
+    db.session.commit()
+    flash(f'Location "{location_id}" deleted.', 'success')
+    return redirect(url_for('locations'))
 
 @app.route('/movements')
 def movements():
