@@ -171,8 +171,29 @@ def delete_location(location_id):
 # Movements feature
 @app.route('/movements')
 def movements():
-    all_movements = ProductMovement.query.order_by(ProductMovement.timestamp.desc()).all()
-    return render_template('movements.html', movements=all_movements)
+    product_filter = request.args.get('product', '').strip()
+    location_filter = request.args.get('location', '').strip()
+
+    query = ProductMovement.query
+
+    if product_filter:
+        query = query.filter_by(product_id=product_filter)
+    if location_filter:
+        query = query.filter(
+            db.or_(
+                ProductMovement.from_location == location_filter,
+                ProductMovement.to_location == location_filter
+            )
+        )
+
+    all_movements = query.order_by(ProductMovement.timestamp.desc()).all()
+
+    products = Product.query.order_by(Product.product_id).all()
+    locations = Location.query.order_by(Location.location_id).all()
+
+    return render_template('movements.html', movements=all_movements,
+                          products=products, locations=locations,
+                          product_filter=product_filter, location_filter=location_filter)
 
 # Movements Add Feature
 @app.route('/movements/add', methods=['GET', 'POST'])
@@ -192,6 +213,8 @@ def add_movement():
             flash(f'Movement ID "{mid}" already exists.', 'error')
         elif not from_loc and not to_loc:
             flash('At least one of From Location or To Location must be filled.', 'error')
+        elif from_loc and to_loc and from_loc == to_loc:
+            flash(' From Location and to Location cannot be the same.', 'error')
         else:
             try:
                 qty = int(qty)

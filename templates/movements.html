@@ -7,6 +7,36 @@
 </div>
 
 <div class="card">
+  <div class="filter-section" style="margin-bottom: 20px; padding: 15px; background: var(--bg-secondary); border-radius: 8px;">
+    <h3 style="margin-top: 0; margin-bottom: 15px;">Filter Movements</h3>
+    <form method="GET" action="{{ url_for('movements') }}" style="display: flex; gap: 15px; align-items: end; flex-wrap: wrap;">
+      <div style="flex: 1; min-width: 200px;">
+        <label for="product" style="display: block; margin-bottom: 5px; font-weight: 500;">Product:</label>
+        <select name="product" id="product" style="width: 100%; padding: 8px; border: 1px solid var(--border); border-radius: 4px; background: var(--bg); color: var(--text);">
+          <option value="" {% if not product_filter %}selected{% endif %}>-- All Products --</option>
+          {% for p in products %}
+          <option value="{{ p.product_id }}" {% if product_filter == p.product_id %}selected{% endif %}>{{ p.product_id }}</option>
+          {% endfor %}
+        </select>
+      </div>
+
+      <div style="flex: 1; min-width: 200px;">
+        <label for="location" style="display: block; margin-bottom: 5px; font-weight: 500;">Location:</label>
+        <select name="location" id="location" style="width: 100%; padding: 8px; border: 1px solid var(--border); border-radius: 4px; background: var(--bg); color: var(--text);">
+          <option value="" {% if not location_filter %}selected{% endif %}>-- All Locations --</option>
+          {% for l in locations %}
+          <option value="{{ l.location_id }}" {% if location_filter == l.location_id %}selected{% endif %}>{{ l.location_id }}</option>
+          {% endfor %}
+        </select>
+      </div>
+
+      <div style="display: flex; gap: 10px;">
+        <button type="submit" class="btn btn-primary" style="padding: 8px 16px;">Filter</button>
+        <a href="{{ url_for('movements') }}" class="btn btn-outline" style="padding: 8px 16px;">Clear</a>
+      </div>
+    </form>
+  </div>
+
   {% if movements %}
   <table>
     <thead>

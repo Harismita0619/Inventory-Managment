@@ -21,6 +21,7 @@ The Dashboard serves as the central hub displaying:
 - Navigation cards for quick access to each module.
 
 Dashboard displaying inventory management interface with product list, location management, movement tracking, and balance report sections
+
 ![](images/Dashboard.jpg)
 
 ### Second Implemented the Product Module
@@ -33,9 +34,11 @@ After the implementation of the Dashboard, I started implementing the Product mo
 - Enables editing and deleting of existing products in the list
 
 Product module interface showing product list with add, edit, and delete functionality
+
 ![](images/Product%20list.jpg)
 
 Product form interface with input fields for product ID, along with Save and Cancel buttons
+
 ![](images/Product%20Form.jpg)
 
 ### Third Implemented the Location Module
@@ -48,9 +51,11 @@ After implementation of the Product module, I started implementing the Location 
 - Enables editing and deleting of existing locations in the list
 
 Location module interface showing warehouse locations list with add, edit, and delete functionality
+
 ![](images/Location%20List.jpg)
 
 Location form interface with input fields for location ID and details, along with Save and Cancel buttons
+
 ![](images/Location%20Form.jpg)
 
 ### Fourth Implemented the Movements Module
@@ -63,13 +68,14 @@ After implementation of the Location module, I started implementing the Movement
 - Movement details including product, source location, destination location, and timestamp
 
 Movement module interface showing product movements list with add, edit, and delete functionality
+
 ![](images/Movements%20list.jpg)
 
 Movement form interface with input fields for product selection, source location, destination location, and quantity, along with Save and Cancel buttons
+
 ![](images/Movements%20form.jpg)
 
 ### Fifth Implementation the Report Module
-### Fifth Implemented the Report Module
 
 After completion of the Movements module, I started implementing the Report module. This module displays the balance quantity of products at each location. The UI includes:
 
@@ -78,4 +84,11 @@ After completion of the Movements module, I started implementing the Report modu
 - Summary view of stock distribution across the warehouse network
 
 Balance report interface displaying product inventory levels by location
+
 ![](images/Balance%20Report.jpg)
+
+### Additional Features
+
+- **Movement Filter**: Implemented a search filter on the Movements page to dynamically display movements based on selected products and locations, improving data visibility and user navigation
+
+![](images/Movements%20filter.jpg)
