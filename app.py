@@ -262,6 +262,62 @@ def report():
     balance = compute_balance()
     return render_template('report.html', balance=balance)
 
+# Seed Data
+@app.route('/seed')
+def seed():
+    for p in ['ProductA', 'ProductB', 'ProductC', 'ProductD']:
+        if not Product.query.get(p):
+            db.session.add(Product(product_id=p))
+
+    for l in ['LocationX', 'LocationY', 'LocationZ', 'LocationW']:
+        if not Location.query.get(l):
+            db.session.add(Location(location_id=l))
+
+    db.session.commit()
+
+    import random, uuid
+    products  = ['ProductA', 'ProductB', 'ProductC', 'ProductD']
+    locations = ['LocationX', 'LocationY', 'LocationZ', 'LocationW']
+
+    movements = [
+        ('ProductA', None, 'LocationX', 50),
+        ('ProductB', None, 'LocationX', 40),
+        ('ProductC', None, 'LocationY', 30),
+        ('ProductD', None, 'LocationZ', 25),
+        ('ProductA', 'LocationX', 'LocationY', 20),
+        ('ProductB', 'LocationX', 'LocationZ', 15),
+        ('ProductA', None, 'LocationW', 60),
+        ('ProductB', None, 'LocationW', 35),
+        ('ProductC', None, 'LocationX', 45),
+        ('ProductD', None, 'LocationY', 20),
+        ('ProductA', 'LocationY', 'LocationZ', 10),
+        ('ProductB', 'LocationZ', 'LocationY', 5),
+        ('ProductC', 'LocationX', 'LocationW', 15),
+        ('ProductD', 'LocationZ', 'LocationX', 10),
+        ('ProductA', 'LocationW', 'LocationX', 25),
+        ('ProductB', 'LocationW', 'LocationY', 20),
+        ('ProductC', 'LocationW', None, 5),
+        ('ProductD', 'LocationX', None, 8),
+        ('ProductA', 'LocationX', 'LocationY', 12),
+        ('ProductB', 'LocationY', 'LocationZ', 10),
+    ]
+
+    for i, (pid, frm, to, qty) in enumerate(movements):
+        mid = f'MOV{i+1:03}'
+        if not ProductMovement.query.get(mid):
+            db.session.add(ProductMovement(
+                movement_id=mid,
+                product_id=pid,
+                from_location=frm,
+                to_location=to,
+                qty=qty
+            ))
+
+    db.session.commit()
+    flash(' Sample data seeded successfully!', 'success')
+    return redirect(url_for('index'))
+
+
 if __name__ == '__main__':
     with app.app_context():
         db.create_all()

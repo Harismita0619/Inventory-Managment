@@ -228,7 +228,7 @@
   <a href="{{ url_for('products') }}"  {% if request.endpoint and 'product' in request.endpoint %}class="active"{% endif %}>Products</a>
   <a href="{{ url_for('locations') }}" {% if request.endpoint and 'location' in request.endpoint %}class="active"{% endif %}>Locations</a>
   <a href="{{ url_for('movements') }}" {% if request.endpoint and 'movement' in request.endpoint %}class="active"{% endif %}>Movements</a>
-  <a href="{{ url_for('report') }}"    class="report-link {% if request.endpoint == 'report' %}active{% endif %}">⬡ Balance Report</a>
+  <a href="{{ url_for('report') }}"    class="report-link {% if request.endpoint == 'report' %}active{% endif %}">Balance Report</a>
 </nav>
 
 <div class="container">

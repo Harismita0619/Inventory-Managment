@@ -67,3 +67,15 @@ Movement module interface showing product movements list with add, edit, and del
 
 Movement form interface with input fields for product selection, source location, destination location, and quantity, along with Save and Cancel buttons
 ![](images/Movements%20form.jpg)
+
+### Fifth Implementation the Report Module
+### Fifth Implemented the Report Module
+
+After completion of the Movements module, I started implementing the Report module. This module displays the balance quantity of products at each location. The UI includes:
+
+- Balance Report table showing product quantities aggregated by location
+- Real-time inventory levels across all warehouse locations
+- Summary view of stock distribution across the warehouse network
+
+Balance report interface displaying product inventory levels by location
+![](images/Balance%20Report.jpg)

@@ -3,6 +3,7 @@
 {% block content %}
 <div class="page-header">
   <h1><span class="label">Welcome to</span>Inventory Manager</h1>
+  <a href="{{ url_for('seed') }}" class="btn btn-outline" > Load Sample Data</a>
 </div>
 
 <div class="stats">
@@ -23,21 +24,18 @@
 <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:1rem;">
   <a href="{{ url_for('products') }}" style="text-decoration:none">
     <div class="card" style="padding:1.5rem;cursor:pointer;transition:border-color 0.15s" onmouseover="this.style.borderColor='#6c63ff'" onmouseout="this.style.borderColor='#2e3148'">
-      <div style="font-size:1.8rem;margin-bottom:0.8rem">📦</div>
       <div style="font-weight:600;margin-bottom:0.3rem">Products</div>
       <div style="font-size:0.85rem;color:var(--muted)">Add, edit, and view all products in your inventory.</div>
     </div>
   </a>
   <a href="{{ url_for('locations') }}" style="text-decoration:none">
     <div class="card" style="padding:1.5rem;cursor:pointer;transition:border-color 0.15s" onmouseover="this.style.borderColor='#00d2a0'" onmouseout="this.style.borderColor='#2e3148'">
-      <div style="font-size:1.8rem;margin-bottom:0.8rem">🏭</div>
       <div style="font-weight:600;margin-bottom:0.3rem">Locations</div>
       <div style="font-size:0.85rem;color:var(--muted)">Manage warehouses and storage locations.</div>
     </div>
   </a>
   <a href="{{ url_for('movements') }}" style="text-decoration:none">
     <div class="card" style="padding:1.5rem;cursor:pointer;transition:border-color 0.15s" onmouseover="this.style.borderColor='#ffb547'" onmouseout="this.style.borderColor='#2e3148'">
-      <div style="font-size:1.8rem;margin-bottom:0.8rem">🔄</div>
       <div style="font-weight:600;margin-bottom:0.3rem">Movements</div>
       <div style="font-size:0.85rem;color:var(--muted)">Track product transfers between locations.</div>
     </div>
@@ -47,7 +45,6 @@
 <div style="margin-top:1rem">
   <a href="{{ url_for('report') }}" style="text-decoration:none">
     <div class="card" style="padding:1.5rem;cursor:pointer;transition:border-color 0.15s;border-color:rgba(0,210,160,0.25)" onmouseover="this.style.borderColor='#00d2a0'" onmouseout="this.style.borderColor='rgba(0,210,160,0.25)'">
-      <div style="font-size:1.8rem;margin-bottom:0.8rem">📊</div>
       <div style="font-weight:600;margin-bottom:0.3rem;color:var(--accent2)">Balance Report</div>
       <div style="font-size:0.85rem;color:var(--muted)">View current product quantities per warehouse location.</div>
     </div>
