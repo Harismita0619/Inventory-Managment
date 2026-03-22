@@ -20,7 +20,8 @@ The Dashboard serves as the central hub displaying:
 - Navigation bar for accessing Products, Locations, Movements, and Balance Report pages
 - Navigation cards for quick access to each module.
 
-![Dashboard displaying inventory management interface with product list, location management, movement tracking, and balance report sections](images/Dashboard.jpg)
+Dashboard displaying inventory management interface with product list, location management, movement tracking, and balance report sections
+![](images/Dashboard.jpg)
 
 ### Second Implemented the Product Module
 
@@ -60,10 +61,9 @@ After implementation of the Location module, I started implementing the Movement
 - Add button to record new product movements
 - Edit and delete functionality for existing movements
 - Movement details including product, source location, destination location, and timestamp
+
 Movement module interface showing product movements list with add, edit, and delete functionality
 ![](images/Movement%20list.jpg)
 
 Movement form interface with input fields for product selection, source location, destination location, and quantity, along with Save and Cancel buttons
 ![](images/Movement%20Form.jpg)
-![](images/)
-![](images/)
