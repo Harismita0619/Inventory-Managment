@@ -48,7 +48,7 @@ After implementation of the Product module, I started implementing the Location 
 - Enables editing and deleting of existing locations in the list
 
 Location module interface showing warehouse locations list with add, edit, and delete functionality
-![](images/Location%20list.jpg)
+![](images/Location%20List.jpg)
 
 Location form interface with input fields for location ID and details, along with Save and Cancel buttons
 ![](images/Location%20Form.jpg)
@@ -63,7 +63,7 @@ After implementation of the Location module, I started implementing the Movement
 - Movement details including product, source location, destination location, and timestamp
 
 Movement module interface showing product movements list with add, edit, and delete functionality
-![](images/Movement%20list.jpg)
+![](images/Movements%20list.jpg)
 
 Movement form interface with input fields for product selection, source location, destination location, and quantity, along with Save and Cancel buttons
-![](images/Movement%20Form.jpg)
+![](images/Movements%20form.jpg)
