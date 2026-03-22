@@ -33,6 +33,27 @@ class ProductMovement(db.Model):
     def __repr__(self):
         return f'<Movement {self.movement_id}>'
 
+# helper
+def compute_balance():
+    balance = {}   # key: (product_id, location_id) → qty
+
+    movements = ProductMovement.query.order_by(ProductMovement.timestamp).all()
+    for m in movements:
+        if m.to_location:
+            key = (m.product_id, m.to_location)
+            balance[key] = balance.get(key, 0) + m.qty
+        if m.from_location:
+            key = (m.product_id, m.from_location)
+            balance[key] = balance.get(key, 0) - m.qty
+
+    result = [
+        {'product': p, 'location': l, 'qty': q}
+        for (p, l), q in balance.items()
+        if q != 0
+    ]
+    result.sort(key=lambda x: (x['product'], x['location']))
+    return result
+
 # Dashboard    
 @app.route('/')
 def index():
@@ -235,10 +256,11 @@ def delete_movement(movement_id):
     flash('Movement deleted.', 'success')
     return redirect(url_for('movements'))
 
-
+# Report Module
 @app.route('/report')
 def report():
-    return render_template('report.html')
+    balance = compute_balance()
+    return render_template('report.html', balance=balance)
 
 if __name__ == '__main__':
     with app.app_context():

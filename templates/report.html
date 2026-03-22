@@ -1,5 +1,49 @@
 {% extends 'base.html' %}
-
+{% block title %}Balance Report — Inventory Manager{% endblock %}
 {% block content %}
-<h1>Products Page</h1>
+<div class="page-header">
+  <h1><span class="label">Inventory</span>Balance Report</h1>
+  <a href="{{ url_for('movements') }}" class="btn btn-outline">View Movements</a>
+</div>
+
+<div class="card">
+  {% if balance %}
+  <table>
+    <thead>
+      <tr>
+        <th>#</th>
+        <th>Product</th>
+        <th>Warehouse / Location</th>
+        <th>Qty</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for row in balance %}
+      <tr>
+        <td><span class="ts">{{ loop.index }}</span></td>
+        <td><span class="badge badge-purple">{{ row.product }}</span></td>
+        <td><span class="badge badge-green">{{ row.location }}</span></td>
+        <td>
+          <strong style="font-family:var(--mono);font-size:1rem;
+            color:{% if row.qty > 0 %}var(--accent2){% else %}var(--danger){% endif %}">
+            {{ row.qty }}
+          </strong>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+  <div style="padding:1rem 1.2rem ;border-top:1px solid var(--border);font-size:0.8rem;color:var(--muted);">
+    Showing {{ balance | length }} product–location combination(s) with non-zero balance.
+  </div>
+
+  {% else %}
+  <div class="empty">
+    <div class="icon">📊</div>
+    <p>No balance data yet. Record some product movements first.</p>
+    <a href="{{ url_for('add_movement') }}" class="btn btn-primary">+ Record Movement</a>
+  </div>
+  {% endif %}
+</div>
 {% endblock %}
