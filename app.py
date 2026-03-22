@@ -38,7 +38,9 @@ class ProductMovement(db.Model):
 def index():
     return render_template('index.html',
     product_count=Product.query.count(),
-    location_count=Location.query.count())
+    location_count=Location.query.count(),
+    movement_count=ProductMovement.query.count()
+    )
 
 # Product Features
 @app.route('/products')
@@ -145,9 +147,94 @@ def delete_location(location_id):
     flash(f'Location "{location_id}" deleted.', 'success')
     return redirect(url_for('locations'))
 
+# Movements feature
 @app.route('/movements')
 def movements():
-    return render_template('movements.html')
+    all_movements = ProductMovement.query.order_by(ProductMovement.timestamp.desc()).all()
+    return render_template('movements.html', movements=all_movements)
+
+# Movements Add Feature
+@app.route('/movements/add', methods=['GET', 'POST'])
+def add_movement():
+    products  = Product.query.all()
+    locs      = Location.query.all()
+    if request.method == 'POST':
+        mid      = request.form['movement_id'].strip()
+        pid      = request.form['product_id']
+        from_loc = request.form.get('from_location', '').strip() or None
+        to_loc   = request.form.get('to_location', '').strip() or None
+        qty      = request.form['qty']
+
+        if not mid:
+            flash('Movement ID cannot be empty.', 'error')
+        elif ProductMovement.query.get(mid):
+            flash(f'Movement ID "{mid}" already exists.', 'error')
+        elif not from_loc and not to_loc:
+            flash('At least one of From Location or To Location must be filled.', 'error')
+        else:
+            try:
+                qty = int(qty)
+                if qty <= 0:
+                    raise ValueError
+            except ValueError:
+                flash('Quantity must be a positive integer.', 'error')
+            else:
+                movement = ProductMovement(
+                    movement_id=mid,
+                    product_id=pid,
+                    from_location=from_loc,
+                    to_location=to_loc,
+                    qty=qty
+                )
+                db.session.add(movement)
+                db.session.commit()
+                flash('Movement recorded!', 'success')
+                return redirect(url_for('movements'))
+
+    return render_template('movement_form.html', action='Add', movement=None,
+                           products=products, locations=locs)
+
+# Movement edit feature
+@app.route('/movements/edit/<movement_id>', methods=['GET', 'POST'])
+def edit_movement(movement_id):
+    movement = ProductMovement.query.get_or_404(movement_id)
+    products = Product.query.all()
+    locs     = Location.query.all()
+    if request.method == 'POST':
+        from_loc = request.form.get('from_location', '').strip() or None
+        to_loc   = request.form.get('to_location', '').strip() or None
+        qty      = request.form['qty']
+
+        if not from_loc and not to_loc:
+            flash('At least one of From Location or To Location must be filled.', 'error')
+        else:
+            try:
+                qty = int(qty)
+                if qty <= 0:
+                    raise ValueError
+            except ValueError:
+                flash('Quantity must be a positive integer.', 'error')
+            else:
+                movement.product_id    = request.form['product_id']
+                movement.from_location = from_loc
+                movement.to_location   = to_loc
+                movement.qty           = qty
+                db.session.commit()
+                flash('Movement updated!', 'success')
+                return redirect(url_for('movements'))
+
+    return render_template('movement_form.html', action='Edit', movement=movement,
+                           products=products, locations=locs)
+
+# Movement delete Feature
+@app.route('/movements/delete/<movement_id>', methods=['POST'])
+def delete_movement(movement_id):
+    movement = ProductMovement.query.get_or_404(movement_id)
+    db.session.delete(movement)
+    db.session.commit()
+    flash('Movement deleted.', 'success')
+    return redirect(url_for('movements'))
+
 
 @app.route('/report')
 def report():

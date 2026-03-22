@@ -1,5 +1,61 @@
 {% extends 'base.html' %}
-
+{% block title %}Movements — Inventory Manager{% endblock %}
 {% block content %}
-<h1>Movements Page</h1>
+<div class="page-header">
+  <h1><span class="label">Product</span>Movements</h1>
+  <a href="{{ url_for('add_movement') }}" class="btn btn-primary">+ Record Movement</a>
+</div>
+
+<div class="card">
+  {% if movements %}
+  <table>
+    <thead>
+      <tr>
+        <th>Movement ID</th>
+        <th>Timestamp</th>
+        <th>Product</th>
+        <th>From → To</th>
+        <th>Qty</th>
+        <th style="text-align:right">Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for m in movements %}
+      <tr>
+        <td><span class="ts">{{ m.movement_id }}</span></td>
+        <td><span class="ts">{{ m.timestamp.strftime('%Y-%m-%d %H:%M') }}</span></td>
+        <td><span class="badge badge-purple">{{ m.product_id }}</span></td>
+        <td>
+          {% if m.from_location %}
+            <span class="badge badge-orange">{{ m.from_location }}</span>
+          {% else %}
+            <span style="color:var(--muted);font-size:0.8rem">—</span>
+          {% endif %}
+          <span class="arrow">→</span>
+          {% if m.to_location %}
+            <span class="badge badge-green">{{ m.to_location }}</span>
+          {% else %}
+            <span style="color:var(--muted);font-size:0.8rem">—</span>
+          {% endif %}
+        </td>
+        <td><strong>{{ m.qty }}</strong></td>
+        <td style="text-align:right">
+          <a href="{{ url_for('edit_movement', movement_id=m.movement_id) }}" class="btn btn-outline btn-sm">Edit</a>
+          <form method="POST" action="{{ url_for('delete_movement', movement_id=m.movement_id) }}" style="display:inline"
+                onsubmit="return confirm('Delete movement {{ m.movement_id }}?')">
+            <button class="btn btn-danger btn-sm">Delete</button>
+          </form>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% else %}
+  <div class="empty">
+    <div class="icon">🔄</div>
+    <p>No movements recorded yet.</p>
+    <a href="{{ url_for('add_movement') }}" class="btn btn-primary">+ Record Movement</a>
+  </div>
+  {% endif %}
+</div>
 {% endblock %}
