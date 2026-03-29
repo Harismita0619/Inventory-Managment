@@ -92,3 +92,5 @@ Balance report interface displaying product inventory levels by location
 - **Movement Filter**: Implemented a search filter on the Movements page to dynamically display movements based on selected products and locations, improving data visibility and user navigation
 
 ![](images/Movements%20filter.jpg)
+
+- **Handle Negative Stocks**: Implement a function which will handle the negative stocks, which restricts the movements of stocks above the available stocks
