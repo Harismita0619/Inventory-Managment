@@ -54,6 +54,20 @@ def compute_balance():
     result.sort(key=lambda x: (x['product'], x['location']))
     return result
 
+def get_balance_for_product(product_id, location_id, exclude_movement_id=None):
+    balance = 0
+    movements = ProductMovement.query.order_by(ProductMovement.timestamp).all()
+    for m in movements:
+        if exclude_movement_id and m.movement_id == exclude_movement_id:
+            continue
+        if m.product_id != product_id:
+            continue
+        if m.to_location == location_id:
+            balance += m.qty
+        if m.from_location == location_id:
+            balance -= m.qty
+    return balance
+
 # Dashboard    
 @app.route('/')
 def index():
@@ -223,6 +237,11 @@ def add_movement():
             except ValueError:
                 flash('Quantity must be a positive integer.', 'error')
             else:
+                if from_loc:
+                    available = get_balance_for_product(pid, from_loc)
+                    if qty > available:
+                        flash(f'Cannot move {qty} units from "{from_loc}". Available balance for product "{pid}" is {available}.','error')
+                        return render_template('movement_form.html', action = 'Add', movement=None,  products=products, location=locs)
                 movement = ProductMovement(
                     movement_id=mid,
                     product_id=pid,
